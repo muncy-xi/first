@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude + ChatGPT 订阅比价排行榜</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f6f7f9;color:#111827}
+header{background:#111827;color:#fff;padding:28px 16px 20px}header .wrap,.wrap{max-width:860px;margin:0 auto}
+h1{margin:0 0 8px;font-size:24px;line-height:1.3}.sub{color:#d1d5db;font-size:14px;line-height:1.6}
+main{padding:16px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;margin-bottom:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{border:1px solid #d1d5db;background:#fff;border-radius:999px;padding:9px 16px;font-size:15px;cursor:pointer}
+.tab.active{background:#111827;color:#fff;border-color:#111827}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=search]{flex:1;min-width:180px;padding:10px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:15px}
+button.refresh{padding:10px 14px;border:0;border-radius:10px;background:#2563eb;color:#fff;font-size:14px;cursor:pointer}
+.meta{font-size:13px;color:#6b7280;line-height:1.7;margin-top:10px}
+.highlight{font-size:15px;line-height:1.8}.highlight b{color:#b45309}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:10px 8px;border-bottom:1px solid #eef0f3;text-align:left;vertical-align:top}
+th{color:#6b7280;font-weight:600;font-size:13px;white-space:nowrap}
+.rank{font-weight:700;width:36px}.cny{font-weight:700;white-space:nowrap}
+.cheap{color:#059669}.expensive{color:#dc2626}
+.badge{display:inline-block;font-size:11px;background:#fef3c7;color:#92400e;border-radius:999px;padding:2px 7px;margin-left:6px;white-space:nowrap}
+a{color:#2563eb;text-decoration:none}a:hover{text-decoration:underline}
+.note{font-size:13px;color:#4b5563;line-height:1.8}
+footer{font-size:12px;color:#9ca3af;text-align:center;padding:8px 16px 28px;line-height:1.7}
+@media(max-width:560px){th:nth-child(4),td:nth-child(4){display:none}h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Claude Pro + ChatGPT Plus 订阅比价排行榜</h1>
+<div class="sub">各国家 / 地区 App Store 月付标价，统一换算成人民币实时排序 · 价格核对日期：2026-10-23</div>
+</div></header>
+<main><div class="wrap">
+<div class="card">
+<div class="highlight" id="headlineClaude"><b>Claude Pro 最便宜：巴基斯坦</b>，PKR 4,900，按核对时汇率约 ¥118.32/月；日本第 3（¥3,000，约 ¥127.87）。土耳其 ₺999.99 已不便宜，换算后比美国还略贵，网上流传的“土耳其低价区”是旧价格。</div>
+<div class="highlight" id="headlineGpt" style="display:none"><b>ChatGPT Plus 最便宜：菲律宾</b>，₱999，按核对时汇率约 ¥105.19/月，比美国便宜约 21%；日本第 4（¥3,000，约 ¥127.72）。土耳其 ₺999.99、尼日利亚 ₦44,900 现在都已涨到比美国还贵。</div>
+<div class="meta">上面金额是 2026-10-23 核对时的快照；下方表格打开页面后会用实时汇率重新换算，名次和金额可能随汇率小幅变动。</div>
+</div>
+
+<div class="card">
+<div class="tabs">
+<button class="tab active" id="tabClaude" onclick="showTab('claude')">Claude Pro</button>
+<button class="tab" id="tabGpt" onclick="showTab('gpt')">ChatGPT Plus</button>
+</div>
+<div class="controls">
+<input type="search" id="q" placeholder="搜索国家 / 地区 / 货币，如 日本、JPY、土耳其" oninput="render()">
+<button class="refresh" onclick="loadRates(true)">↻ 刷新汇率</button>
+</div>
+<div class="meta" id="fxMeta">汇率加载中…</div>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>国家 / 地区</th><th>当地标价（月付）</th><th>渠道</th><th>折合人民币</th><th>比美国</th><th>来源</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table></div>
+<div class="meta" id="countMeta"></div>
+</div>
+
+<div class="card note">
+<b>怎么看这个榜</b><br>
+· 排序按折合人民币从低到高；“比美国”以同产品美国区标价为基准。<br>
+· Claude Pro 的美国官网直订（Web，$20）单列一条，和美国 App Store（$20）分开，方便对比渠道。<br>
+· 价格是 App Store 各分区月付标价，核对日期 2026-10-23；分区价不常变，但官方调价后需更新本页数据。<br>
+· <b>提醒：</b>跨区订阅一般需要当地支付方式或礼品卡，且可能受 Apple / Anthropic / OpenAI 服务条款限制，本页仅作比价参考。<br>
+· 数据来源：<a href="https://apps.apple.com/us/app/claude-by-anthropic/id6473753684" target="_blank" rel="noopener">Claude - App Store</a> · <a href="https://www.claude.com/pricing" target="_blank" rel="noopener">Claude 官方定价</a> · <a href="https://apps.apple.com/us/app/chatgpt/id6448311069" target="_blank" rel="noopener">ChatGPT - App Store</a> · <a href="https://openai.com/chatgpt/pricing/" target="_blank" rel="noopener">ChatGPT 官方定价</a>
+</div>
+</div></main>
+<footer>汇率来源：open.er-api.com（备用 exchangerate-api.com）· 打开页面实时换算，非固定汇率<br>本页为静态页面，可直接部署到 Cloudflare Pages</footer>
+<script>
+var SRC_CLAUDE_APP="https://apps.apple.com/us/app/claude-by-anthropic/id6473753684";
+var SRC_CLAUDE_WEB="https://www.claude.com/pricing";
+var SRC_GPT_APP="https://apps.apple.com/us/app/chatgpt/id6448311069";
+var SRC_GPT_WEB="https://openai.com/chatgpt/pricing/";
+var CLAUDE=[
+["巴基斯坦","PKR",4900,"App Store"],["土耳其","TRY",999.99,"App Store"],
+["日本","JPY",3000,"App Store"],["韩国","KRW",29000,"App Store"],
+["美国（官网直订）","USD",20,"Web"],["墨西哥","MXN",399,"App Store"],
+["美国","USD",20,"App Store"],["澳大利亚","AUD",34.99,"App Store"],
+["欧元区","EUR",22.99,"App Store"],["印度","INR",1999,"App Store"],
+["英国","GBP",20,"App Store"],["菲律宾","PHP",999,"App Store"],
+["中国台湾","TWD",690,"App Store"],["巴西","BRL",109.9,"App Store"],
+["加拿大","CAD",27.99,"App Store"],["波兰","PLN",99.99,"App Store"],
+["南非","ZAR",399.99,"App Store"],["瑞士","CHF",25,"App Store"],
+["瑞典","SEK",249,"App Store"],["挪威","NOK",249,"App Store"],
+["丹麦","DKK",179,"App Store"],["印度尼西亚","IDR",359000,"App Store"],
+["泰国","THB",699,"App Store"],["越南","VND",499000,"App Store"],
+["马来西亚","MYR",94.9,"App Store"],["新加坡","SGD",29.98,"App Store"],
+["中国香港","HKD",158,"App Store"],["新西兰","NZD",36.99,"App Store"],
+["阿联酋","AED",79.99,"App Store"],["沙特阿拉伯","SAR",94.99,"App Store"],
+["以色列","ILS",84.9,"App Store"],["尼日利亚","NGN",30000,"App Store"],
+["埃及","EGP",999.99,"App Store"],["乌克兰","UAH",899.99,"App Store"]
+];
+var GPT=[
+["菲律宾","PHP",999,"App Store"],["印度","INR",1999,"App Store"],
+["日本","JPY",3000,"App Store"],["韩国","KRW",29000,"App Store"],
+["巴西","BRL",99.9,"App Store"],["墨西哥","MXN",399,"App Store"],
+["美国","USD",19.99,"App Store"],["欧元区","EUR",22.99,"App Store"],
+["英国","GBP",19.99,"App Store"],["澳大利亚","AUD",29.99,"App Store"],
+["中国台湾","TWD",690,"App Store"],["波兰","PLN",99.99,"App Store"],
+["土耳其","TRY",999.99,"App Store"],["尼日利亚","NGN",44900,"App Store"],
+["印度尼西亚","IDR",359000,"App Store"],["泰国","THB",699,"App Store"],
+["越南","VND",499000,"App Store"],["马来西亚","MYR",94.9,"App Store"],
+["新加坡","SGD",29.98,"App Store"],["中国香港","HKD",158,"App Store"],
+["加拿大","CAD",27.99,"App Store"]
+];
+var current="claude", rates=null, fxTime=null;
+function fmtLocal(cur,v){return cur+" "+v.toLocaleString("en-US",{minimumFractionDigits:(v%1?2:0),maximumFractionDigits:2});}
+function toCNY(cur,v){if(!rates||!rates[cur]||!rates.CNY)return null;return v/rates[cur]*rates.CNY;}
+function usCNY(data){for(var i=0;i<data.length;i++){if(data[i][1]==="USD"&&data[i][3]==="App Store")return toCNY("USD",data[i][2]);}return null;}
+function showTab(t){current=t;document.getElementById("tabClaude").className="tab"+(t==="claude"?" active":"");document.getElementById("tabGpt").className="tab"+(t==="gpt"?" active":"");document.getElementById("headlineClaude").style.display=t==="claude"?"":"none";document.getElementById("headlineGpt").style.display=t==="gpt"?"":"none";render();}
+</script>
+<script>
+function render(){
+ var data=current==="claude"?CLAUDE:GPT;
+ var q=(document.getElementById("q").value||"").trim().toLowerCase();
+ var rows=data.map(function(r){return{name:r[0],cur:r[1],price:r[2],ch:r[3],cny:toCNY(r[1],r[2])};});
+ rows.sort(function(a,b){if(a.cny===null)return 1;if(b.cny===null)return -1;return a.cny-b.cny;});
+ var base=usCNY(data), html="", shown=0;
+ rows.forEach(function(r,i){
+   if(q && (r.name+" "+r.cur+" "+r.ch).toLowerCase().indexOf(q)<0)return;
+   shown++;
+   var diff="—", cls="";
+   if(base&&r.cny!==null){var d=(r.cny/base-1)*100;diff=(d>0?"+":"")+d.toFixed(1)+"%";cls=d<0?"cheap":(d>0?"expensive":"");}
+   var src=current==="claude"?(r.ch==="Web"?SRC_CLAUDE_WEB:SRC_CLAUDE_APP):(r.ch==="Web"?SRC_GPT_WEB:SRC_GPT_APP);
+   var badge=i===0?'<span class="badge">最低</span>':"";
+   html+="<tr><td class='rank'>"+(i+1)+"</td><td>"+r.name+badge+"</td><td>"+fmtLocal(r.cur,r.price)+"</td><td>"+r.ch+"</td><td class='cny'>"+(r.cny===null?"加载中…":"¥"+r.cny.toFixed(2))+"</td><td class='"+cls+"'>"+diff+"</td><td><a href='"+src+"' target='_blank' rel='noopener'>来源</a></td></tr>";
+ });
+ if(!shown)html="<tr><td colspan='7'>没有匹配的结果，换个关键词试试。</td></tr>";
+ document.getElementById("tbody").innerHTML=html;
+ document.getElementById("countMeta").textContent="共 "+data.length+" 条 · 当前显示 "+shown+" 条 · 价格核对日期：2026-10-23";
+ var fm=document.getElementById("fxMeta");
+ if(rates&&rates.CNY){fm.textContent="实时汇率：1 USD ≈ ¥"+rates.CNY.toFixed(4)+"（USD/CNY）"+(fxTime?" · 更新于 "+fxTime:"")+" · 金额随汇率实时换算";}
+ else{fm.textContent="汇率加载失败，请点「刷新汇率」重试；标价本身仍可参考。";}
+}
+async function loadRates(manual){
+ document.getElementById("fxMeta").textContent="汇率加载中…";
+ var urls=["https://open.er-api.com/v6/latest/USD","https://api.exchangerate-api.com/v4/latest/USD"];
+ for(var i=0;i<urls.length;i++){
+   try{var res=await fetch(urls[i]);if(!res.ok)continue;var j=await res.json();if(j&&j.rates&&j.rates.CNY){rates=j.rates;fxTime=new Date().toLocaleString("zh-CN",{hour12:false});render();return;}}catch(e){}
+ }
+ rates=null;render();
+}
+render();loadRates(false);
+</script>
+</body>
+</html>
